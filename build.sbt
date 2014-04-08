@@ -6,7 +6,7 @@ name := "scalaML"
 
 version := "0.0.1"
 
-organization := "com.cennavi"
+organization := "com.ml"
 
 // set the Scala version used for the project
 scalaVersion := "2.10.4"

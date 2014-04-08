@@ -23,7 +23,7 @@ object RidgeRegression {
   }
 
   //var gram: Array[Array[Double]] = null
-  
+
   //原始形式
   def classifier(insts: Instances, T: Int, rate: Double, fold: Int) {
     val numClass = insts.numClass
@@ -70,9 +70,9 @@ object RidgeRegression {
         val traindata = mergeFold(foldA, i).++(mergeFold(foldB, i))
         val testdata = foldA(i).++=(foldB(i))
         shuffle(traindata)
-//        val w = Array.fill(insts.attr)(0.0)
-//        val bias = 0.0
-        val model = train(traindata, pair,T, rate)
+        //        val w = Array.fill(insts.attr)(0.0)
+        //        val bias = 0.0
+        val model = train(traindata, pair, T, rate)
         //val model = trainByGram(traindata, pair, rate, T)
         val matrix = predict(model, testdata, pair)
         //val matrix = predictByGram(model, testdata, pair)
@@ -80,11 +80,11 @@ object RidgeRegression {
         r += (matrix(pair._1).getOrElse(pair._1, 0) + matrix(pair._2).getOrElse(pair._2, 0)) * 1.0 / a
       }
       avg += (r / fold)
-//      val w = Array.fill(insts.attr)(0.0)
-//      val bias = 0.0
+      //      val w = Array.fill(insts.attr)(0.0)
+      //      val bias = 0.0
       val alldata = classA.++(classB)
       shuffle(alldata)
-      val fmodel = train(alldata, pair, T,rate)
+      val fmodel = train(alldata, pair, T, rate)
       //val fmodel = trainByGram(alldata, pair, rate, T)
       models += fmodel
     }
@@ -110,7 +110,7 @@ object RidgeRegression {
       //data.+=(v)
     }
   }
-  
+
   def mergeFold(f: Array[ArrayBuffer[LabeledFeature]],
     i: Int): ArrayBuffer[LabeledFeature] = {
     val merge = new ArrayBuffer[LabeledFeature]()
@@ -133,7 +133,7 @@ object RidgeRegression {
     f
   }
   def train(input: ArrayBuffer[LabeledFeature],
-      pair:(String,String), T: Int, rate: Double):Model = {
+    pair: (String, String), T: Int, rate: Double): Model = {
 
     var featureLen = input(0).features.length
     var initWeights = Array.fill[Double](featureLen + 1)(math.random)
@@ -151,21 +151,21 @@ object RidgeRegression {
     //    }
     //initWeights = SGD_miniBacth(data, initWeights, 0.6, 1000)
     //initWeights = SGD(data, initWeights, 1000)
-    initWeights = gradientDescent(data, initWeights,pair, T,rate)
+    initWeights = gradientDescent(data, initWeights, pair, T, rate)
     var w: Array[Double] = Array[Double](initWeights: _*)
     //System.out.println(w.map(d => print(d + ":")))
-    Model(w,pair)
+    Model(w, pair)
   }
 
   //Gradient Descent Algorithm
   def gradientDescent(data: ArrayBuffer[LabeledFeature],
-    initWeights: Array[Double],pair:(String,String), iteNum: Int,rate:Double): Array[Double] = {
+    initWeights: Array[Double], pair: (String, String), iteNum: Int, rate: Double): Array[Double] = {
 
     val count = data.size.toInt
     for (j <- 0 until iteNum) {
       val weights = data.map(f => {
         //val label = f.label.toDouble
-        val label = if(f.label.equals(pair._1)) 1 else 0
+        val label = if (f.label.equals(pair._1)) 1 else 0
         val point = f.features.map(f => f.toDouble)
 
         var sumWeights = new Array[Double](initWeights.length)
@@ -180,7 +180,7 @@ object RidgeRegression {
         r
       })
       for (i <- 0 until initWeights.length) {
-        initWeights(i) = initWeights(i) - rate * (1.0 / count.toDouble) * (weights(i)+ 0.01*initWeights(i))
+        initWeights(i) = initWeights(i) - rate * (1.0 / count.toDouble) * (weights(i) + 0.01 * initWeights(i))
       }
     }
     initWeights
@@ -189,7 +189,7 @@ object RidgeRegression {
   //Stochastic Gradient Descent Algorithm
   // it seem can not parallel in spark
   def SGD(data: ArrayBuffer[LabeledFeature],
-    initWeights: Array[Double],pair:(String,String), iteNum: Int,rate:Double): Array[Double] = {
+    initWeights: Array[Double], pair: (String, String), iteNum: Int, rate: Double): Array[Double] = {
 
     for (ite <- 0 until iteNum) {
       //var i = 0
@@ -198,14 +198,14 @@ object RidgeRegression {
       data.map(f => {
 
         //val label = f.label.toDouble
-        val label = if(f.label.equals(pair._1)) 1 else 0
+        val label = if (f.label.equals(pair._1)) 1 else 0
         val point = f.features.map(f => f.toDouble)
 
         //var weights = h(point,initWeights)
         //var sumWeights = Array[Double](initWeights.length)
         for (i <- 0 until initWeights.length) {
           val r = (h(point, initWeights) - label) * point(i)
-          val th = initWeights(i) - rate * (r+0.01*initWeights(i))
+          val th = initWeights(i) - rate * (r + 0.01 * initWeights(i))
           initWeights(i) = th
         }
 
@@ -226,7 +226,7 @@ object RidgeRegression {
   }
   //Mini-batch-Stochastic Gradient Descent Algorithm
   def SGD_miniBacth(data: ArrayBuffer[LabeledFeature],
-    initWeights: Array[Double],pair:(String,String), fraction: Double, IteMun: Int,rate:Double): Array[Double] = {
+    initWeights: Array[Double], pair: (String, String), fraction: Double, IteMun: Int, rate: Double): Array[Double] = {
 
     //val loop = (data.count / size).toInt;
     //var weights = Array[Double](initWeights.length)
@@ -239,7 +239,7 @@ object RidgeRegression {
         val sum = sampleData.map(f => {
 
           //val label = f.label.toDouble
-          val label = if(f.label.equals(pair._1)) 1 else 0
+          val label = if (f.label.equals(pair._1)) 1 else 0
           val point = f.features.map(f => f.toDouble)
           var t = Array.fill(initWeights.length)(0.0)
           for (i <- 0 until t.length) {
@@ -253,7 +253,7 @@ object RidgeRegression {
           r
         })
         for (i <- 0 until initWeights.length) {
-          initWeights(i) = initWeights(i) - rate * (sum(i)+0.01 * initWeights(i)) / size
+          initWeights(i) = initWeights(i) - rate * (sum(i) + 0.01 * initWeights(i)) / size
         }
       }
     }
@@ -272,7 +272,7 @@ object RidgeRegression {
     System.out.println(r)
     r
   }
-def predict(model: Model,
+  def predict(model: Model,
     test: ArrayBuffer[LabeledFeature],
     pair: (String, String)): HashMap[String, HashMap[String, Int]] = {
     //val b = model.b
@@ -290,7 +290,7 @@ def predict(model: Model,
     data.map(f => {
       val label = f.label
       //val yi = if (f.label.equalsIgnoreCase(pair._1)) 1 else -1
-      val point = f.features.map(f=>f.toDouble)
+      val point = f.features.map(f => f.toDouble)
       val yx = h(point, w)
       val l = if (yx <= 0.5) 0 else 1
       val rlabel = if (1 == l) pair._1 else pair._2
@@ -299,7 +299,7 @@ def predict(model: Model,
     matrix
   }
 
-def predictMulti(models: ArrayBuffer[Model],
+  def predictMulti(models: ArrayBuffer[Model],
     f: LabeledFeature): String = {
     val matrix = new HashMap[String, Int]
 
@@ -313,9 +313,9 @@ def predictMulti(models: ArrayBuffer[Model],
       //test.map(f => {
       //val label = f.label
       //val yi = if (f.label.equalsIgnoreCase(pair._1)) 1 else -1
-      
-      val point = f.features.map(f=>f.toDouble)
-      val yx = h(Array(1.0,point:_*), w)
+
+      val point = f.features.map(f => f.toDouble)
+      val yx = h(Array(1.0, point: _*), w)
       val l = if (yx <= 0.5) 0 else 1
 
       val rlabel = if (1 == l) pair._1 else pair._2

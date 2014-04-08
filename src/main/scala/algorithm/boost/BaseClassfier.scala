@@ -158,7 +158,7 @@ object BaseClassfier {
       //val N = Qtiy(j).size
       //val t = Qtiy(j).map(f=>f._2 * ll.getOrElse(f._1, 0.0)).sum
       //err += data(j).weight * (1 - ll(label) + t)   
-      err += Wi_notyi(i).map(f => { f._2 * (1 - ll.getOrElse(label,0.0) + ll.getOrElse(f._1,0.0)) }).sum
+      err += Wi_notyi(i).map(f => { f._2 * (1 - ll.getOrElse(label, 0.0) + ll.getOrElse(f._1, 0.0)) }).sum
       // }
     }
     for (i <- 0 until right.size) {
@@ -170,7 +170,7 @@ object BaseClassfier {
       //      val N = Qtiy(j).size
       //      val t = Qtiy(j).map(f=>f._2 * lr.getOrElse(f._1, 0.0)).sum
       //      err += data(j).weight * (1 - lr(label) + t)  
-      err += Wi_notyi(i).map(f => { f._2 * (1 - lr.getOrElse(label,0.0) + lr.getOrElse(f._1,0.0)) }).sum
+      err += Wi_notyi(i).map(f => { f._2 * (1 - lr.getOrElse(label, 0.0) + lr.getOrElse(f._1, 0.0)) }).sum
     }
     err = err * 0.5
     val beta_t = err / (1 - err) //0.5 * math.log((1 - err) / (err)) 
@@ -181,11 +181,11 @@ object BaseClassfier {
       val j = lf.i
       val f = lf.features(bestAttr)
       val label = lf.label
-      Wi_notyi(j).+=(("_w_",lf.weight))
+      Wi_notyi(j).+=(("_w_", lf.weight))
       Wi_notyi(j).map(t => {
         //print(Wi_notyi(j)(t._1))
         Wi_notyi(j)(t._1) = Wi_notyi(j)(t._1) *
-          math.pow(beta_t, 0.5 * (1 - ll.getOrElse(t._1, 0.0) + ll.getOrElse(label,0.0)))
+          math.pow(beta_t, 0.5 * (1 - ll.getOrElse(t._1, 0.0) + ll.getOrElse(label, 0.0)))
         //math.exp(-1*beta_t*(1 + ll.getOrElse(t._1, 0.0) -ll(label)))
         //println("=>"+Wi_notyi(j)(t._1)) 
       })
@@ -196,15 +196,15 @@ object BaseClassfier {
       val j = lf.i
       val f = lf.features(bestAttr)
       val label = lf.label
-      Wi_notyi(j).+=(("_w_",lf.weight))
+      Wi_notyi(j).+=(("_w_", lf.weight))
       Wi_notyi(j).map(t => {
         //print(Wi_notyi(j)(t._1))
         Wi_notyi(j)(t._1) = Wi_notyi(j)(t._1) *
-          math.pow(beta_t, 0.5 * (1 - ll.getOrElse(t._1, 0.0) + ll.getOrElse(label,0.0)))
+          math.pow(beta_t, 0.5 * (1 - ll.getOrElse(t._1, 0.0) + ll.getOrElse(label, 0.0)))
         //math.exp(-1*beta_t*(1 + lr.getOrElse(t._1, 0.0) -lr(label)))
         //println("=>"+Wi_notyi(j)(t._1))
       })
-       lf.weight = Wi_notyi(j).remove("_w_").get
+      lf.weight = Wi_notyi(j).remove("_w_").get
     }
     //}
 

@@ -9,11 +9,11 @@ import scala.Array.canBuildFrom
 object ID3 {
   case class LabeledFeature(label: String, features: Array[String])
   case class Node(i: Int, sets: HashMap[String, Node], label: String)
-  var idx = HashMap[Int,HashSet[String]]()
+  var idx = HashMap[Int, HashSet[String]]()
   var data = ArrayBuffer[LabeledFeature]()
   var root = Node(-1, null, "")
   var ite = 0
-  def index(file: String) :Node = {
+  def index(file: String): Node = {
     var buff = Source.fromFile(new File(file))
     buff.getLines.toArray.map(line => {
       val arr = line.split(",")
@@ -21,21 +21,21 @@ object ID3 {
       val features = arr.slice(0, arr.length - 1)
       for (i <- 0 until features.length) {
         val v = features(i)
-        if(!idx.contains(i)){idx.put(i,new HashSet[String]())}
-        if (!idx(i).contains(v)) { idx(i)+=v.trim() }
+        if (!idx.contains(i)) { idx.put(i, new HashSet[String]()) }
+        if (!idx(i).contains(v)) { idx(i) += v.trim() }
       }
       data.+=(LabeledFeature(label, features))
     })
     buff.close
-    buildDT(data,idx)
+    buildDT(data, idx)
   }
 
-  def buildDT(data: ArrayBuffer[LabeledFeature], idx: HashMap[Int,HashSet[String]]): Node = {
-    println("ite:"+ ite)
+  def buildDT(data: ArrayBuffer[LabeledFeature], idx: HashMap[Int, HashSet[String]]): Node = {
+    println("ite:" + ite)
     ite += 1
     var labels = new HashMap[String, Int]()
     data.map(f => {
-      if (!labels.contains(f.label)) labels.+=((f.label, 1)) else labels(f.label)=labels(f.label) + 1
+      if (!labels.contains(f.label)) labels.+=((f.label, 1)) else labels(f.label) = labels(f.label) + 1
     })
     var sum = labels.values.sum
     //如果某改节点的某种分类占比大于0.95，则不继续分裂
@@ -44,13 +44,13 @@ object ID3 {
       Node(-1, null, filters(0)._1)
     } else {
       //该节点总信息量
-      val entropy = labels.map(f => { 
-        val p =(f._2 *1.0 / sum)
-       val r= -1* p* Math.log(p) 
-       r
-       }).sum
-       //目前为止还未使用属性的各个属性信息量
-      val f_entropy = new HashMap[Int,Double]
+      val entropy = labels.map(f => {
+        val p = (f._2 * 1.0 / sum)
+        val r = -1 * p * Math.log(p)
+        r
+      }).sum
+      //目前为止还未使用属性的各个属性信息量
+      val f_entropy = new HashMap[Int, Double]
 
       for (i <- idx.keys) {
         val s = idx(i)
@@ -68,21 +68,21 @@ object ID3 {
           val feature = f._1
           val feature_cnt = f._2.values.sum
           entr_cnt(feature) = f._2.values.sum + entr_cnt.getOrElse(feature, 0)
-          entr(feature) = f._2.map(t => { 
-            val p = t._2 *1.0 / feature_cnt
-            -1.0* p * math.log(p) 
-           }).sum
+          entr(feature) = f._2.map(t => {
+            val p = t._2 * 1.0 / feature_cnt
+            -1.0 * p * math.log(p)
+          }).sum
         })
         val total = entr_cnt.values.sum
         f_entropy(i) = cnt.map(f => {
           val sum1 = f._2.values.sum
-          val r = (sum1*1.0 / total) * entr(f._1)
+          val r = (sum1 * 1.0 / total) * entr(f._1)
           r
         }).sum
       }
 
       //找出最大信息增益
-      var finals = f_entropy.map(f =>{(f._1, entropy - f._2)})
+      var finals = f_entropy.map(f => { (f._1, entropy - f._2) })
       var maxval = (-1.0)
       var maxindex = (-1)
       for (i <- finals.keys) {
@@ -123,9 +123,9 @@ object ID3 {
   }
 
   def main(args: Array[String]): Unit = {
-    
+
     val t = index("E:/books/spark/ml/decisionTree/test.txt")
-    
+
     t
   }
 

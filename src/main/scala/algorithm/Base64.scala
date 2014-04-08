@@ -93,6 +93,6 @@ object Base64 {
     println(UnCompressNumber(CompressNumber(605752100005L, 6)))
     println(CompressNumber(636317L, 6))
     println(UnCompressNumber(CompressNumber(636317L, 6)))
-    
+
   }
 }

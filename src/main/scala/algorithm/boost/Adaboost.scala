@@ -5,7 +5,6 @@ import scala.collection.mutable.HashSet
 import algorithm.Instances
 import scala.Array.canBuildFrom
 
-
 object Adaboost {
 
   def M1(insts: Instances, M: Int) {
@@ -111,14 +110,14 @@ object Adaboost {
         //       i+=1
       })
 
-//      var sum = 0.0
-//      for (i <- 0 until data.size) {
-//        sum += data(i).weight
-//      }
+      //      var sum = 0.0
+      //      for (i <- 0 until data.size) {
+      //        sum += data(i).weight
+      //      }
       //Dti
-//      for (i <- 0 until data.size) {
-//        data(i).weight = data(i).weight/sum
-//      }
+      //      for (i <- 0 until data.size) {
+      //        data(i).weight = data(i).weight/sum
+      //      }
 
       val m = M2Classfier.M2(insts, /**Qtiy,*/ Wi_notyi)
       Gm(t) = m

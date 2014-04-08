@@ -121,7 +121,7 @@ object FPtree {
       for (a <- nodes.toIterator) {
         val ai = a
         val bs = base.map(f => f)
-        bs+=(ai)
+        bs += (ai)
         val ss = HashSet(bs: _*)
 
         hMap(ss) = hMap.getOrElse(ss, 0) + table(ai).count
@@ -159,7 +159,7 @@ object FPtree {
     }
     //如果路径不为空，把路径看做数据项，数据项的support为b对应节点的support,重新构造新树
     if (Arr.size > 0) {
-                
+
       val root = new Tree(null, 0, new HashMap[String, Tree], null, null)
 
       var itemsets = new HashMap[String, Int]
@@ -205,7 +205,7 @@ object FPtree {
       None
     }
   }
-  
+
   //裁剪support<2的节点
   def prune(tree: Tree) {
     val s = tree.nodes.keys

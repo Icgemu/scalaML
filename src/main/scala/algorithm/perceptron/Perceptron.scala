@@ -22,7 +22,7 @@ object Perceptron {
   }
 
   //var gram: Array[Array[Double]] = null
-  
+
   //原始形式
   def classifier(insts: Instances, T: Int, rate: Double, fold: Int) {
     val numClass = insts.numClass

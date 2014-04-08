@@ -60,7 +60,7 @@ object Discretization {
       numInstances += 1
       //weight
       counts(1)(labelToIndex(iClass, lf.label)) += 1
-//      counts(1)(labelToIndex(iClass, lf.label)) += lf.features(attIndex).toDouble
+      //      counts(1)(labelToIndex(iClass, lf.label)) += lf.features(attIndex).toDouble
     })
 
     var priorCounts = Array.fill(numClass)(0.0)
@@ -80,11 +80,11 @@ object Discretization {
 
     for (i <- 0 until data.size - 1) {
 
-            counts(0)(labelToIndex(iClass, data(i).label)) += 1
-            counts(1)(labelToIndex(iClass, data(i).label)) -= 1
+      counts(0)(labelToIndex(iClass, data(i).label)) += 1
+      counts(1)(labelToIndex(iClass, data(i).label)) -= 1
 
-//      counts(0)(labelToIndex(iClass, data(i).label)) += data(i).features(attIndex).toDouble
-//      counts(1)(labelToIndex(iClass, data(i).label)) -= data(i).features(attIndex).toDouble
+      //      counts(0)(labelToIndex(iClass, data(i).label)) += data(i).features(attIndex).toDouble
+      //      counts(1)(labelToIndex(iClass, data(i).label)) -= data(i).features(attIndex).toDouble
 
       if (data(i).features(attIndex) < data(i + 1).features(attIndex)) {
         currentCutPoint = (data(i).features(attIndex).toDouble +

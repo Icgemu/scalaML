@@ -80,8 +80,8 @@ object NaiveBeyes {
         var cnt = ai_yi_prob(label)(i)("count")
         val avg1 = sum / cnt
         //ai_yi_prob(label)(i)("mean") = avg1
-        val dev = ai_yi_prob(label)(i).getOrElse("dev", 0.0) + 
-        	(features(i).toDouble - avg1) * (features(i).toDouble - avg1)
+        val dev = ai_yi_prob(label)(i).getOrElse("dev", 0.0) +
+          (features(i).toDouble - avg1) * (features(i).toDouble - avg1)
 
         ai_yi_prob(label)(i)("dev") = dev
       }
@@ -115,7 +115,7 @@ object NaiveBeyes {
         val p = prob.getOrElse(label, yi_prob(label))
         val v = f.features(i).toDouble
         val g = ((1 / (math.sqrt(2 * math.Pi) * dev)) * (
-            math.exp(-1 * (v - mean) * (v - mean) / (2 * dev * dev))))
+          math.exp(-1 * (v - mean) * (v - mean) / (2 * dev * dev))))
         prob.put(label, p * g)
 
       }

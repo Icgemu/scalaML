@@ -10,7 +10,7 @@ import algorithm.LabeledFeature
 
 object CARTv2 {
 
-  def classifier(insts: Instances) :HashMap[Int, Node] = {
+  def classifier(insts: Instances): HashMap[Int, Node] = {
     val data = insts.data
     val idx = insts.idx
     val numIdx = insts.numIdx
@@ -20,7 +20,7 @@ object CARTv2 {
     //prune()
     nodes
   }
-  
+
   case class Node(index: Int, split: String,
     left: Int, right: Int,
     parent: Int, err: Double,

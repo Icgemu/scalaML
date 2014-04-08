@@ -119,7 +119,7 @@ object PocketAlgorithm {
     var W = pi
     var isbreak = false
     var j = T
-    while (!isbreak && j>0) {
+    while (!isbreak && j > 0) {
       val ramSel = data((data.size * math.random).toInt)
       val yi = if (ramSel.label.equalsIgnoreCase(pair._1)) 1 else -1
       val fs = ramSel.features.map(f => f.toDouble)
@@ -157,7 +157,7 @@ object PocketAlgorithm {
         pi = pi.zip(f).map(t => { t._1 + yi * t._2 })
         run_W = 0
       }
-      j-=1
+      j -= 1
     }
 
     Model(W, pair)

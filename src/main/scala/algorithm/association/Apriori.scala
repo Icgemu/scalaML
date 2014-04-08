@@ -47,7 +47,7 @@ object Apriori {
               val b = Arr(it2.size - 1)(it2)
               val conf = (a * 1.0 / b)
               if (conf > confidence) {
-                
+
                 println(it2.mkString("&&") + "=>" + it1.mkString("&&") +
                   " ,confidence=" + a + "/" + b + "=" + conf.toString())
               }
@@ -72,7 +72,7 @@ object Apriori {
         val inter = f.intersect(t)
         if (inter.size == 0) {
           val u = t.union(f)
-          if(!set.contains(u)){
+          if (!set.contains(u)) {
             m.+=(u)
           }
         }

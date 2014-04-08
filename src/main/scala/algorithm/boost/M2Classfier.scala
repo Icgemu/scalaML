@@ -7,7 +7,6 @@ import scala.collection.mutable.ArrayBuffer
 
 object M2Classfier {
 
- 
   def M2(insts: Instances,
     //Qtiy: Array[HashMap[String, Double]],
     Wi_notyi: Array[HashMap[String, Double]]): (Int, Double, String, Map[String, Double], Map[String, Double], Double) = {
@@ -28,13 +27,13 @@ object M2Classfier {
     for (iAttr <- idx1.keys) {
       val isNumeric = numIdx.contains(iAttr)
       if (isNumeric) {
-        var bestSplit = splitNumeric(data, iAttr, iClass.size,Wi_notyi)
+        var bestSplit = splitNumeric(data, iAttr, iClass.size, Wi_notyi)
         split(iAttr) = bestSplit._1 + ""
         gini(iAttr) = bestSplit._2
         dist(iAttr) = bestSplit._3
         fration(iAttr) = bestSplit._4
       } else {
-        var bestSplit = splitNonimal(data, iAttr, iClass.size,Wi_notyi)
+        var bestSplit = splitNonimal(data, iAttr, iClass.size, Wi_notyi)
         split(iAttr) = bestSplit._1
         gini(iAttr) = bestSplit._2
         dist(iAttr) = bestSplit._3
@@ -89,7 +88,7 @@ object M2Classfier {
       //val N = Qtiy(j).size
       //val t = Qtiy(j).map(f=>f._2 * ll.getOrElse(f._1, 0.0)).sum
       //err += data(j).weight * (1 - ll(label) + t)   
-      err += Wi_notyi(i).map(f => { f._2 * (1 - ll(label) + ll.getOrElse(f._1,0.0)) }).sum
+      err += Wi_notyi(i).map(f => { f._2 * (1 - ll(label) + ll.getOrElse(f._1, 0.0)) }).sum
       // }
     }
     for (i <- 0 until right.size) {
@@ -101,7 +100,7 @@ object M2Classfier {
       //      val N = Qtiy(j).size
       //      val t = Qtiy(j).map(f=>f._2 * lr.getOrElse(f._1, 0.0)).sum
       //      err += data(j).weight * (1 - lr(label) + t)  
-      err += Wi_notyi(i).map(f => { f._2 * (1 - lr(label) + lr.getOrElse(f._1,0.0)) }).sum
+      err += Wi_notyi(i).map(f => { f._2 * (1 - lr(label) + lr.getOrElse(f._1, 0.0)) }).sum
     }
     err = err * 0.5
     val beta_t = err / (1 - err) //0.5 * math.log((1 - err) / (err)) 
@@ -116,7 +115,7 @@ object M2Classfier {
       Wi_notyi(j).map(t => {
         //print(Wi_notyi(j)(t._1))
         Wi_notyi(j)(t._1) = Wi_notyi(j)(t._1) *
-          math.pow(beta_t, 0.5 * (1 - ll.getOrElse(t._1, 0.0) + ll.getOrElse(label,0.0)))
+          math.pow(beta_t, 0.5 * (1 - ll.getOrElse(t._1, 0.0) + ll.getOrElse(label, 0.0)))
         //math.exp(-1*beta_t*(1 + ll.getOrElse(t._1, 0.0) -ll(label)))
         //println("=>"+Wi_notyi(j)(t._1)) 
       })
@@ -131,7 +130,7 @@ object M2Classfier {
       Wi_notyi(j).map(t => {
         //print(Wi_notyi(j)(t._1))
         Wi_notyi(j)(t._1) = Wi_notyi(j)(t._1) *
-          math.pow(beta_t, 0.5 * (1 - ll.getOrElse(t._1, 0.0) + ll.getOrElse(label,0.0)))
+          math.pow(beta_t, 0.5 * (1 - ll.getOrElse(t._1, 0.0) + ll.getOrElse(label, 0.0)))
         //math.exp(-1*beta_t*(1 + lr.getOrElse(t._1, 0.0) -lr(label)))
         //println("=>"+Wi_notyi(j)(t._1))
       })
@@ -152,7 +151,7 @@ object M2Classfier {
     i
   }
   def labelfor(data: ArrayBuffer[LabeledFeature],
-      Wi_notyi: Array[HashMap[String, Double]]): (String, Double, Double) = {
+    Wi_notyi: Array[HashMap[String, Double]]): (String, Double, Double) = {
 
     var iClass = data.groupBy(f => f.label).map(f => (f._1, f._2.size))
     val classSum = iClass.values.sum
@@ -160,8 +159,8 @@ object M2Classfier {
     var max = -1.0
     var label = ""
     classFraction.map(c => { if (c._2 > max) { max = c._2; label = c._1 } })
-    
-    val hit = data.filterNot(d => d.label.equalsIgnoreCase(label)).map(f => { Wi_notyi(f.i)(label)}).sum
+
+    val hit = data.filterNot(d => d.label.equalsIgnoreCase(label)).map(f => { Wi_notyi(f.i)(label) }).sum
     //val mis = data.map(f => f.weight).sum - hit
     (label, hit, 0.0)
   }
@@ -196,7 +195,7 @@ object M2Classfier {
     val hasValueInsts = instances.filter(p => { !p.features(iAttr).equalsIgnoreCase("?") })
     val allValue = hasValueInsts.map(f => f.features(iAttr)).toSet.toArray
 
-   // val parentDist = instances.groupBy(f => f.label).map(f => (f._1, f._2.map(t => t.weight).sum))
+    // val parentDist = instances.groupBy(f => f.label).map(f => (f._1, f._2.map(t => t.weight).sum))
 
     for (currCutPoint <- allValue.toIterator) {
 
@@ -204,43 +203,43 @@ object M2Classfier {
       //var dist = Array.fill(2)(new HashMap[String, Double]())
 
       var right = ArrayBuffer[LabeledFeature]()
-    var left = ArrayBuffer[LabeledFeature]()
-    
+      var left = ArrayBuffer[LabeledFeature]()
+
       hasValueInsts.map(inst => {
         val f = inst.features(iAttr)
         if (currCutPoint.equalsIgnoreCase(f)) {
           //val t = dist(1).getOrElse(inst.label, 0.0)
           //dist(1)(inst.label) = t + 1.0
-          left+=(inst)
+          left += (inst)
         } else {
           //dist(0)(inst.label) = dist(0).getOrElse(inst.label, 0.0) + 1
-          right+=(inst)
+          right += (inst)
         }
       })
 
-//      val tempDist = Array.fill(2)(0.0)
-//      tempDist(0) = dist(0).values.sum * 1.0
-//      tempDist(1) = dist(1).values.sum * 1.0
-//
-//      val tempSum = tempDist.sum
-//      val tempPro = tempDist.map(t => t * 1.0 / tempSum)
+      //      val tempDist = Array.fill(2)(0.0)
+      //      tempDist(0) = dist(0).values.sum * 1.0
+      //      tempDist(1) = dist(1).values.sum * 1.0
+      //
+      //      val tempSum = tempDist.sum
+      //      val tempPro = tempDist.map(t => t * 1.0 / tempSum)
 
       missInsts.map(inst => {
         //for (i <- 0 until 2) {
-          //dist(i)(inst.label) = dist(i).getOrElse(inst.label, 0.0) + tempPro(i) * inst.weight
+        //dist(i)(inst.label) = dist(i).getOrElse(inst.label, 0.0) + tempPro(i) * inst.weight
         //}
-        left+=(inst)
-        right+=(inst)
+        left += (inst)
+        right += (inst)
       })
-      val ll = labelfor(left,Wi_notyi)
-      val lr = labelfor(right,Wi_notyi)
-      
-      val currGini = ll._2+lr._2//computeGiniGain(dist, parentDist)
+      val ll = labelfor(left, Wi_notyi)
+      val lr = labelfor(right, Wi_notyi)
+
+      val currGini = ll._2 + lr._2 //computeGiniGain(dist, parentDist)
       if (currGini < bestGini) {
         bestGini = currGini
         bestCutPoint = currCutPoint
-//        bestDist = dist
-//        bestFaction = tempPro
+        //        bestDist = dist
+        //        bestFaction = tempPro
       }
 
     }
@@ -263,44 +262,44 @@ object M2Classfier {
 
     for (i <- 0 until sortedValue.length - 1) {
       val currCutPoint = (sortedValue(i) + sortedValue(i + 1)) / 2.0
-     // var dist = Array.fill(2)(HashMap[String, Double]())
-  var right = ArrayBuffer[LabeledFeature]()
-    var left = ArrayBuffer[LabeledFeature]()
+      // var dist = Array.fill(2)(HashMap[String, Double]())
+      var right = ArrayBuffer[LabeledFeature]()
+      var left = ArrayBuffer[LabeledFeature]()
       hasValueInsts.map(inst => {
         val f = inst.features(iAttr).toDouble
         if (f > currCutPoint) {
           //dist(1)(inst.label) = dist(1).getOrElse(inst.label, 0.0) + inst.weight
-          right+=(inst)
+          right += (inst)
         } else {
           //dist(0)(inst.label) = dist(0).getOrElse(inst.label, 0.0) + inst.weight
-          left+=(inst)
+          left += (inst)
         }
       })
 
-//      val tempDist = Array.fill(2)(0.0)
-//      tempDist(0) = dist(0).values.sum * 1.0
-//      tempDist(1) = dist(1).values.sum * 1.0
-//
-//      val tempSum = tempDist.sum
-//      val tempPro = tempDist.map(t => t * 1.0 / tempSum)
+      //      val tempDist = Array.fill(2)(0.0)
+      //      tempDist(0) = dist(0).values.sum * 1.0
+      //      tempDist(1) = dist(1).values.sum * 1.0
+      //
+      //      val tempSum = tempDist.sum
+      //      val tempPro = tempDist.map(t => t * 1.0 / tempSum)
 
       missInsts.map(inst => {
-//        for (i <- 0 until 2) {
-//          dist(i)(inst.label) = dist(i).getOrElse(inst.label, 0.0) + tempPro(i) * inst.weight
-//        }
-        right+=(inst)
-        left+=(inst)
+        //        for (i <- 0 until 2) {
+        //          dist(i)(inst.label) = dist(i).getOrElse(inst.label, 0.0) + tempPro(i) * inst.weight
+        //        }
+        right += (inst)
+        left += (inst)
       })
-      
-      val ll = labelfor(left,Wi_notyi)
-      val lr = labelfor(right,Wi_notyi)
-      
-      val currGini = ll._2+lr._2
+
+      val ll = labelfor(left, Wi_notyi)
+      val lr = labelfor(right, Wi_notyi)
+
+      val currGini = ll._2 + lr._2
       if (currGini < bestGini) {
         bestGini = currGini
         bestCutPoint = currCutPoint
-//        bestDist = dist
-//        bestFaction = tempPro
+        //        bestDist = dist
+        //        bestFaction = tempPro
       }
     }
     (bestCutPoint, bestGini, bestDist, bestFaction)

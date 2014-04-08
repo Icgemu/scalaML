@@ -96,13 +96,13 @@ object ClassificationDecisionStump {
     //    val rc = valuefor(right)
     //    val ac = valuefor(data)
     //    println("miss=>"+miss.size)
-    iClass.map(f=>{
-      if(!bestDist(0).contains(f)){
+    iClass.map(f => {
+      if (!bestDist(0).contains(f)) {
         bestDist(0)(f) = 0.0
       }
-      if(!bestDist(1).contains(f)){
+      if (!bestDist(1).contains(f)) {
         bestDist(1)(f) = 0.0
-      }  
+      }
     })
     val parentDist = data.groupBy(f => f.label).map(f => (f._1, f._2.map(f => f.weight).sum))
     nodes(index * 2) = new Node(index * 2, "", -1, -1, -1, index, bestDist(0).toMap, null, left.size, 1)
@@ -197,7 +197,7 @@ object ClassificationDecisionStump {
     Arr.map(f => { if (f > max) { max = f; i = j }; j += 1 })
     i
   }
-   def minIndex(Arr: Array[Double]): Int = {
+  def minIndex(Arr: Array[Double]): Int = {
     var i = 0
     var min = Arr(0)
     var j = 0
@@ -269,18 +269,18 @@ object ClassificationDecisionStump {
   }
   def computeGiniGain(childDist: Array[HashMap[String, Double]],
     parentDist: Map[String, Double]): Double = {
-    val t = childDist.map(f=>f.values.toArray)
+    val t = childDist.map(f => f.values.toArray)
     Discretization.entropyConditionedOnRows(t)
-//    val totalWeight = parentDist.values.sum
-//    var parentGini = computeGini(parentDist, totalWeight)
-//    
-//    childDist.map(f => {
-//      val w = f.values.sum
-//      val gini = computeGini(f.toMap, w)
-//      parentGini = parentGini - (w/totalWeight)* gini
-//    })
-//    
-//    parentGini
+    //    val totalWeight = parentDist.values.sum
+    //    var parentGini = computeGini(parentDist, totalWeight)
+    //    
+    //    childDist.map(f => {
+    //      val w = f.values.sum
+    //      val gini = computeGini(f.toMap, w)
+    //      parentGini = parentGini - (w/totalWeight)* gini
+    //    })
+    //    
+    //    parentGini
   }
 
   def splitNumeric(index: Int, instances: ArrayBuffer[LabeledFeature],

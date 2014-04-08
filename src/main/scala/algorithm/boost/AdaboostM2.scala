@@ -23,7 +23,7 @@ object AdaboostM2 {
       val i = f.i
       Ks.map(cl => {
         //if (!cl.equalsIgnoreCase(label)) { Wty(i)(cl) = w / (size * (K - 1)) }
-        if (!cl.equalsIgnoreCase(label)) { Wty(i)(cl) = w / ( (K - 1)) }
+        if (!cl.equalsIgnoreCase(label)) { Wty(i)(cl) = w / ((K - 1)) }
       })
     })
 
@@ -38,12 +38,12 @@ object AdaboostM2 {
         Wt(i) = Wty(i).values.sum
         Qty(i) = Wty(i).map(f => (f._1, f._2 / Wt(i)))
       }
-      
+
       val sum = Wt.sum
       for (i <- 0 until size) {
         //print(Dt(i)+"=>")
         Dt(i) = Wt(i) / sum
-       // println(Dt(i))
+        // println(Dt(i))
         data(i).weight = Dt(i)
       }
 
@@ -72,14 +72,14 @@ object AdaboostM2 {
       for (i <- 0 until data.size) {
         val m = ClassificationDecisionStump2.instanceFor(nodes, 1, data(i).features, insts.numIdx)
         val sum = m.values.sum
-       
+
         m.map(f => {
           val t = f._2 / sum
           //val t = f._2 
           if (!f._1.equalsIgnoreCase(data(i).label)) {
             //print(Wty(i).getOrElse(f._1,0.0) +"=>")
             Wty(i)(f._1) = Wty(i).getOrElse(f._1, 0.0) *
-            //Math.pow(beta, 0.5 * (1 + m.getOrElse(data(i).label, 0.0) - t))
+              //Math.pow(beta, 0.5 * (1 + m.getOrElse(data(i).label, 0.0) - t))
               Math.pow(beta, 0.5 * (1 + m.getOrElse(data(i).label, 0.0) / sum - t))
             //println(Wty(i)(f._1))
           }
@@ -106,7 +106,7 @@ object AdaboostM2 {
         val sum = m.values.sum
         m.map(f => {
           //val t = f._2 / sum
-          val t = f._2 
+          val t = f._2
           p(f._1) = p.getOrElse(f._1, 0.0) + b * t
         })
       })

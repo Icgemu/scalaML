@@ -97,13 +97,13 @@ object ClassificationDecisionStump2 {
     //    val rc = valuefor(right)
     //    val ac = valuefor(data)
     //    println("miss=>"+miss.size)
-    iClass.map(f=>{
-      if(!bestDist(0).contains(f)){
+    iClass.map(f => {
+      if (!bestDist(0).contains(f)) {
         bestDist(0)(f) = 0.0
       }
-      if(!bestDist(1).contains(f)){
+      if (!bestDist(1).contains(f)) {
         bestDist(1)(f) = 0.0
-      }  
+      }
     })
     val parentDist = data.groupBy(f => f.label).map(f => (f._1, f._2.map(f => f.weight).sum))
     nodes(index * 2) = new Node(index * 2, "", -1, -1, -1, index, bestDist(0).toMap, null, left.size, 1)

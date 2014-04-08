@@ -6,41 +6,41 @@ import algorithm.tree.RFtree.Node
 import scala.collection.mutable.HashSet
 
 object RandomForest {
-  
-  def classifier(insts:Instances,T:Int,m:Int){
-    
-    val trees = Array.fill(T)(HashMap[Int,Node]())
-    for(t<- 0 until T){
+
+  def classifier(insts: Instances, T: Int, m: Int) {
+
+    val trees = Array.fill(T)(HashMap[Int, Node]())
+    for (t <- 0 until T) {
       val N = insts.data.size
-      
+
       val X = Array.fill(N)(Array.fill(insts.attr)(""))
       val Y = Array.fill(N)("")
-      for(n<- 0 until N){
+      for (n <- 0 until N) {
         val i = (math.random * N).toInt
         X(n) = insts.data(i).features
         Y(n) = insts.data(i).label
       }
-      
+
       val r = insts.attr - m
-      val idx = insts.idx.map(f=>f)
-      while(idx.size>m){
+      val idx = insts.idx.map(f => f)
+      while (idx.size > m) {
         val keys = idx.keys.toArray
-        val t = (keys.size * math.random ).toInt
-        idx.remove(keys(t)) 
+        val t = (keys.size * math.random).toInt
+        idx.remove(keys(t))
       }
-      
+
       val data = new Instances(insts.numIdx)
       data.read(X, Y)
       data.idx = idx
-      
-      val nodes=RFtree.classifier(data)
+
+      val nodes = RFtree.classifier(data)
       RFtree.printTree(nodes, nodes(1), 0)
       trees(t) = nodes
     }
-    test(insts,trees)
+    test(insts, trees)
   }
-  def test(insts:Instances,
-      Fkm:Array[HashMap[Int,Node]]){
+  def test(insts: Instances,
+    Fkm: Array[HashMap[Int, Node]]) {
     val numIdx = insts.numIdx
     val Ks = insts.classof.toArray
     insts.data.map(lf => {
@@ -51,9 +51,9 @@ object RandomForest {
         //val b = bt._1
         val f = bt
         val m = RFtree.instanceFor(f, 1, lf.features, numIdx)
-        m.map(f=>{
-          p(f._1) = p.getOrElse(f._1, 0.0) + f._2 
-        })     
+        m.map(f => {
+          p(f._1) = p.getOrElse(f._1, 0.0) + f._2
+        })
       })
       //}
 
@@ -69,7 +69,7 @@ object RandomForest {
   }
 
   def main(args: Array[String]): Unit = {
-     var numIdx = new HashSet[Int]
+    var numIdx = new HashSet[Int]
     numIdx.+=(0)
     numIdx.+=(1)
     numIdx.+=(2)
@@ -81,7 +81,7 @@ object RandomForest {
     val insts = new Instances(numIdx)
     insts.read("E:/books/spark/ml/decisionTree/labor.csv")
 
-    classifier(insts, 10,10)
+    classifier(insts, 10, 10)
   }
 
 }

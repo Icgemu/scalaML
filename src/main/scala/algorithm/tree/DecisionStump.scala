@@ -37,7 +37,7 @@ object DecisionStump {
     val j = if (J % 2 == 0) J else J + 1
     val okset = HashSet[Int]()
     while ((set.size + okset.size) < j && set.size > 0) {
-      val sl = set.toArray.sortBy(f => f).first
+      val sl = set.toArray.sortBy(f => f).head
       val l = sl * 2
       val r = l + 1
       set.remove(sl)
@@ -161,7 +161,7 @@ object DecisionStump {
     val mc = valuefor(miss)
     val rc = valuefor(right)
     val ac = valuefor(data)
-    println("miss=>"+miss.size)
+    println("miss=>" + miss.size)
     nodes(index * 2) = new Node(index * 2, "", -1, -1, -1, index, lc, lc, 0.0, left.size, 1)
     nodes(index * 2 + 1) = new Node(index * 2 + 1, "", -1, -1, -1, index, rc, rc, 0.0, right.size, 1)
     nodes(index) = new Node(index, bestSplit, bestAttr, 2 * index, 2 * index + 1, -1, lc + rc, ac, mc, data.size, 2)
@@ -311,19 +311,19 @@ object DecisionStump {
       val avgleft = left.map(f => f.value * f.weight).sum
       val avgright = right.map(f => f.value * f.weight).sum
       val avgmiss = miss.map(f => f.value * f.weight).sum
-      
+
       val sqrleft = left.map(f => (f.value) * (f.value) * f.weight).sum
       val sqrright = right.map(f => (f.value) * (f.value) * f.weight).sum
       val sqrmiss = miss.map(f => (f.value) * (f.value) * f.weight).sum
-      
+
       val swleft = left.map(f => f.weight).sum
       val swright = right.map(f => f.weight).sum
       val swmiss = miss.map(f => f.weight).sum
-      
+
       val lossmiss = sqrmiss - avgmiss * avgmiss / swmiss
       val lossleft = sqrleft - avgleft * avgleft / swleft
       val lossright = sqrright - avgright * avgright / swright
-      
+
       val currGini = lossleft + lossright + lossmiss //computeGiniGain(dist, parentDist)
       if (currGini < bestGini && left.size > N && right.size > N) {
         bestGini = currGini
@@ -370,7 +370,7 @@ object DecisionStump {
         val miss = missInsts.map(f => f)
         hasValueInsts.map(inst => {
           val f = inst.features(iAttr).toDouble
-          if (f >=currCutPoint) {
+          if (f >= currCutPoint) {
             val t = dist(1)
             dist(1) = t + inst.weight
             right += inst
@@ -401,19 +401,19 @@ object DecisionStump {
         val avgleft = left.map(f => f.value * f.weight).sum
         val avgright = right.map(f => f.value * f.weight).sum
         val avgmiss = miss.map(f => f.value * f.weight).sum
-        
+
         val sqrleft = left.map(f => (f.value) * (f.value) * f.weight).sum
         val sqrright = right.map(f => (f.value) * (f.value) * f.weight).sum
         val sqrmiss = miss.map(f => (f.value) * (f.value) * f.weight).sum
-        
+
         val swleft = left.map(f => f.weight).sum
         val swright = right.map(f => f.weight).sum
         val swmiss = miss.map(f => f.weight).sum
-        
+
         val lossmiss = sqrmiss - avgmiss * avgmiss / swmiss
         val lossleft = sqrleft - avgleft * avgleft / swleft
         val lossright = sqrright - avgright * avgright / swright
-        
+
         val currGini = lossleft + lossright + lossmiss //computeGiniGain(dist, parentDist)
 
         if (currGini < bestGini && left.size > N && right.size > N) {

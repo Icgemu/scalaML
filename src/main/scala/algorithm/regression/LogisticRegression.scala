@@ -224,12 +224,12 @@ object LogisticRegression {
       }).reduce((t1, t2) => { t1.zip(t2).map(t => t._1 + t._2) })
         .map(t => t / data.size)
       val nola = math.sqrt(gxkplus1.map(f => f * f).sum)
-       println(nola)
-       val cov = nol - nola
-      if ( cov>=0 && cov < 1e-3) {
+      println(nola)
+      val cov = nol - nola
+      if (cov >= 0 && cov < 1e-3) {
         isCov = true
       } else {
-        
+
         val yk = transpose(Array.fill(1)(gxkplus1.zip(gxk).map(t => { t._1 - t._2 })))
         val gak = transpose(Array.fill(1)(weights.zip(initWeights).map(t => { t._1 - t._2 })))
         val v1 = dot(yk, transpose(yk))
@@ -242,7 +242,7 @@ object LogisticRegression {
           initWeights(i) = weights(i)
         }
         gxk = gxkplus1
-        
+
         nol = nola
       }
     }

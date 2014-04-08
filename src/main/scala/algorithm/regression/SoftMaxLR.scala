@@ -20,7 +20,7 @@ object SoftMaxLR {
   val intTlabels = new HashMap[Int, String]
   def classifier(insts: Instances, learnRate: Double, momentum: Double, ite: Int): Model = {
 
-    K = insts.classof.size -1
+    K = insts.classof.size - 1
     M = insts.data.size
     N = insts.attr + 1
 
@@ -38,9 +38,9 @@ object SoftMaxLR {
     var theta = Array.fill(h_value.length)(Array.fill(N)(math.random))
 
     for (i <- 0 until ite) {
-      val alpha = (learnRate)/(i+learnRate)
+      val alpha = (learnRate) / (i + learnRate)
       modify_stochostic(data, learnRate, momentum, h_value, theta)
-     //modify_batch(data, learnRate, momentum, h_value, theta)
+      //modify_batch(data, learnRate, momentum, h_value, theta)
     }
     Model(theta)
   }
@@ -67,7 +67,7 @@ object SoftMaxLR {
 
     for (i <- (0 until K)) {
       h_value(i) = h_value(i) / sum
-      
+
     }
   }
 
@@ -82,11 +82,11 @@ object SoftMaxLR {
         for (k <- (0 until N)) {
           val yi = (if (labelsTOInt(x(j).label) == i) 1 else 0)
           val xi = (x(j).features(k).toDouble)
-           val b = theta(i)(k)
-          theta(i)(k) += learnRate * ( xi*( yi- h_value(i)) + momentum * theta(i)(k))
-//            if(theta(i)(k) < Double.MaxValue){
-//            println(b-theta(i)(k))
-//           }
+          val b = theta(i)(k)
+          theta(i)(k) += learnRate * (xi * (yi - h_value(i)) + momentum * theta(i)(k))
+          //            if(theta(i)(k) < Double.MaxValue){
+          //            println(b-theta(i)(k))
+          //           }
         }
       }
     }
@@ -105,7 +105,7 @@ object SoftMaxLR {
       }
       for (k <- 0 until N) {
         //theta(i)(k) += 0.001 * sum(k) / N
-        theta(i)(k) += learnRate * (sum(k)  + momentum * theta(i)(k))/ M
+        theta(i)(k) += learnRate * (sum(k) + momentum * theta(i)(k)) / M
         println(theta(i)(k))
       }
     }
@@ -122,8 +122,8 @@ object SoftMaxLR {
     val h_value = Array.fill(K)(0.0)
     h(lf, h_value, model.theta)
 
-    System.out.println(labelsTOInt(lf.label) + "=>" + 
-        h_value(0) + " " + h_value(1) + " " + (1-h_value(1)-h_value(0)))
+    System.out.println(labelsTOInt(lf.label) + "=>" +
+      h_value(0) + " " + h_value(1) + " " + (1 - h_value(1) - h_value(0)))
   }
 
   def main(args: Array[String]): Unit = {
@@ -141,17 +141,17 @@ object SoftMaxLR {
     insts.read("E:/books/spark/ml/decisionTree/iris.csv")
 
     var x = Array[Array[Double]](
-    Array(47, 76, 24),
-    Array(46, 77, 23),
-    Array(48, 74, 22),
-    Array(34, 76, 21),
-    Array(35, 75, 24),
-    Array(34, 77, 25),
-    Array(55, 76, 21),
-    Array(56, 74, 22),
-    Array(55, 72, 22))
-   val y = Array(1, 1, 1, 2, 2, 2, 3, 3, 3)
-  //insts.read(x,y)
+      Array(47, 76, 24),
+      Array(46, 77, 23),
+      Array(48, 74, 22),
+      Array(34, 76, 21),
+      Array(35, 75, 24),
+      Array(34, 77, 25),
+      Array(55, 76, 21),
+      Array(56, 74, 22),
+      Array(55, 72, 22))
+    val y = Array(1, 1, 1, 2, 2, 2, 3, 3, 3)
+    //insts.read(x,y)
     val model = classifier(insts, 0.01, 0.01, 100)
     val data = insts.data.map(lf => {
       val label = lf.label

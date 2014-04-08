@@ -7,12 +7,12 @@ import scala.Array.canBuildFrom
 
 object RecommenderSystem {
 
-  case class Model(av:Double,
-      bu:Array[Double],
-      bi:Array[Double],
-      pu:Array[Array[Double]],
-      qi:Array[Array[Double]])
-      
+  case class Model(av: Double,
+    bu: Array[Double],
+    bi: Array[Double],
+    pu: Array[Array[Double]],
+    qi: Array[Array[Double]])
+
   def average(file: String): (Double, Int, Int) = {
 
     val buff = Source.fromFile(new File(file))
@@ -45,7 +45,7 @@ object RecommenderSystem {
     if (sc < 1) 1 else if (sc > 5) 5 else sc
   }
 
-  def svd(trainFile: String, testFile: String):Model = {
+  def svd(trainFile: String, testFile: String): Model = {
     val av = average(trainFile)
     val averageScore = av._1
     val userNum = av._3
@@ -67,13 +67,13 @@ object RecommenderSystem {
     var preRmse = 1000000.0
     var step = 0
     //var isbreak = true
-    while (step <52) {
+    while (step < 52) {
       println("Step " + step)
       val buff = Source.fromFile(new File(trainFile))
       buff.getLines.toArray.map(line => {
         val arr = line.split("	")
-        val iid = arr(1).toInt -1
-        val uid = arr(0).toInt -1
+        val iid = arr(1).toInt - 1
+        val uid = arr(0).toInt - 1
         val sc = arr(2).toDouble
 
         val r = score(averageScore, bu(uid), bi(iid), pu(uid), qi(iid))
@@ -91,33 +91,33 @@ object RecommenderSystem {
         }
       })
       buff.close
-//      val curRmse = validate(testFile, averageScore, bu, bi, pu, qi)
-//      if(curRmse > preRmse){
-//        isbreak = true
-//      }else{
-//        preRmse = curRmse
-        step +=1
-//      }
-//      println(curRmse)
+      //      val curRmse = validate(testFile, averageScore, bu, bi, pu, qi)
+      //      if(curRmse > preRmse){
+      //        isbreak = true
+      //      }else{
+      //        preRmse = curRmse
+      step += 1
+      //      }
+      //      println(curRmse)
     }
 
-    Model(averageScore,bu,bi,pu,qi)
+    Model(averageScore, bu, bi, pu, qi)
   }
 
-  def validate(testFile:String,
-      av:Double,
-      bu:Array[Double],
-      bi:Array[Double],
-      pu:Array[Array[Double]],
-      qi:Array[Array[Double]]):Double = {
-    
-    var cnt =0
+  def validate(testFile: String,
+    av: Double,
+    bu: Array[Double],
+    bi: Array[Double],
+    pu: Array[Array[Double]],
+    qi: Array[Array[Double]]): Double = {
+
+    var cnt = 0
     var rmse = 0.0
     val buff = Source.fromFile(new File(testFile))
-    buff.getLines.toArray.map(line=>{
+    buff.getLines.toArray.map(line => {
       val arr = line.split("	")
-      val iid = arr(1).toInt -1
-      val uid = arr(0).toInt -1 
+      val iid = arr(1).toInt - 1
+      val uid = arr(0).toInt - 1
       val sc = arr(2).toDouble
 
       val r = score(av, bu(uid), bi(iid), pu(uid), qi(iid))
@@ -127,26 +127,26 @@ object RecommenderSystem {
     buff.close
     rmse
   }
-  
-  def predict(model:Model,testFile:String){
+
+  def predict(model: Model, testFile: String) {
     val buff = Source.fromFile(new File(testFile))
-    buff.getLines.toArray.map(line=>{
+    buff.getLines.toArray.map(line => {
       val arr = line.split("	")
-      val iid = arr(1).toInt -1
-      val uid = arr(0).toInt -1 
+      val iid = arr(1).toInt - 1
+      val uid = arr(0).toInt - 1
       val sc = arr(2).toDouble
 
-      val r = score(model.av, model.bu(uid), model.bi(iid), model.pu(uid),model.qi(iid))
+      val r = score(model.av, model.bu(uid), model.bi(iid), model.pu(uid), model.qi(iid))
 
-      print(line+"==>" + r)
+      print(line + "==>" + r)
       println
     })
     buff.close
   }
   def main(args: Array[String]): Unit = {
     val model = svd("E://books/spark/ml/SVD/ml_data/training.txt",
-        "E://books/spark/ml/SVD/ml_data/test.txt")
-    predict(model,"E:/books/spark/ml/SVD/ml_data/test.txt")
+      "E://books/spark/ml/SVD/ml_data/test.txt")
+    predict(model, "E:/books/spark/ml/SVD/ml_data/test.txt")
   }
 
 }

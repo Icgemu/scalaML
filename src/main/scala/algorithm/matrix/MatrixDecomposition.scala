@@ -723,7 +723,7 @@ object MatrixDecomposition {
     max.zip(x).map(row => {
       val r1 = row._1
       val r2 = row._2
-      for(i<-0 until r2.size){
+      for (i <- 0 until r2.size) {
         r1(i) = r2(i) * y
       }
     })
@@ -749,8 +749,8 @@ object MatrixDecomposition {
     val row = x.length
     val col = x(0).length
 
-    val matrix = randomMatrix(row,col)
-    
+    val matrix = randomMatrix(row, col)
+
     var matr = x.map(row => {
       val t = row ++: (Array.fill(col)(0.0))
       t
@@ -810,27 +810,27 @@ object MatrixDecomposition {
     }
     matrix
   }
-  
-  def randomMatrix(m:Int,n:Int):Array[Array[Double]]={
-    
+
+  def randomMatrix(m: Int, n: Int): Array[Array[Double]] = {
+
     val ma = Array.fill(m)(Array.fill(n)(0.0))
-    ma.map(row=>{
-      
-      for(i<- 0 until row.size){
+    ma.map(row => {
+
+      for (i <- 0 until row.size) {
         row(i) = math.random
       }
     })
     ma
   }
-  def randomorthoMatrix(m:Int):Array[Array[Double]]={
-    
+  def randomorthoMatrix(m: Int): Array[Array[Double]] = {
+
     val ma = Array.fill(m)(Array.fill(m)(0.0))
     //ma.map(row=>{
-      for(j<- 0 until m){
-      for(i<- 0 until m){
+    for (j <- 0 until m) {
+      for (i <- 0 until m) {
         val r = math.random
         ma(i)(j) = r
-         ma(j)(i) = r
+        ma(j)(i) = r
       }
     }
     ma

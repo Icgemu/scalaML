@@ -17,7 +17,6 @@ object CARTReg {
 
   }
 
-  
   var ite = 0
   val N = 1
   def classifier(insts: RegInstances, J: Int): HashMap[Int, Node] = {
@@ -25,20 +24,20 @@ object CARTReg {
     val data = insts.data
     val idx = insts.idx
     val numIdx = insts.numIdx
-    buildDT(nodes,data, idx, numIdx, 1)
+    buildDT(nodes, data, idx, numIdx, 1)
 
-    get(nodes,J)
+    get(nodes, J)
     //prune()
     //printTree(nodes(1), 0)
     //println("--------------")
     nodes
   }
-  def get(nodes:HashMap[Int, Node],J: Int) {
+  def get(nodes: HashMap[Int, Node], J: Int) {
     val set = HashSet(2, 3)
     val j = if (J % 2 == 0) J else J + 1
     val okset = HashSet[Int]()
-    while ((set.size + okset.size) < j && set.size>0) {
-      val sl = set.toArray.sortBy(f => f).first
+    while ((set.size + okset.size) < j && set.size > 0) {
+      val sl = set.toArray.sortBy(f => f).head
       val l = sl * 2
       val r = l + 1
       set.remove(sl)
@@ -53,18 +52,18 @@ object CARTReg {
     //printTree(nodes,nodes(1), 0)
     //println(okset.mkString(","))
     val l = nodes(okset.toArray.sortBy(f => f).last).index
-    truncateNode(nodes,nodes(1), l)
-    pruneNode(nodes,nodes(1))
-     val remove = nodes.filter(p=>{
-      p._1>l
+    truncateNode(nodes, nodes(1), l)
+    pruneNode(nodes, nodes(1))
+    val remove = nodes.filter(p => {
+      p._1 > l
     })
-    remove.map(f=>{
+    remove.map(f => {
       nodes.remove(f._1)
     })
     //nodes = nodes.map(f=>f)
   }
 
-  def prune(nodes:HashMap[Int, Node]) {
+  def prune(nodes: HashMap[Int, Node]) {
     val notLeaf = nodes.filter(p => p._2.leaf > 1)
     var minerr = Double.MaxValue
     var minIndex = -1
@@ -79,32 +78,32 @@ object CARTReg {
     })
 
     if (minIndex % 2 == 0) { minIndex += 1 }
-    truncateNode(nodes,nodes(1), minIndex)
-    pruneNode(nodes,nodes(1))
-    val remove = nodes.filter(p=>{
-      p._1>minIndex
+    truncateNode(nodes, nodes(1), minIndex)
+    pruneNode(nodes, nodes(1))
+    val remove = nodes.filter(p => {
+      p._1 > minIndex
     })
-    remove.map(f=>{
+    remove.map(f => {
       nodes.remove(f._1)
     })
   }
 
-  def truncateNode(nodes:HashMap[Int, Node],node: Node, maxIndex: Int) {
+  def truncateNode(nodes: HashMap[Int, Node], node: Node, maxIndex: Int) {
     if (node.index > maxIndex) { nodes.remove(node.index) }
     else {
-      if (node.left > 0) truncateNode(nodes,nodes(node.left), maxIndex)
-      if (node.right > 0) truncateNode(nodes,nodes(node.right), maxIndex)
+      if (node.left > 0) truncateNode(nodes, nodes(node.left), maxIndex)
+      if (node.right > 0) truncateNode(nodes, nodes(node.right), maxIndex)
     }
   }
-  def pruneNode(nodes:HashMap[Int, Node],node: Node) {
-    if (nodes.contains(node.left)) { pruneNode(nodes,nodes(node.left)); pruneNode(nodes,nodes(node.right)) }
+  def pruneNode(nodes: HashMap[Int, Node], node: Node) {
+    if (nodes.contains(node.left)) { pruneNode(nodes, nodes(node.left)); pruneNode(nodes, nodes(node.right)) }
     else {
       nodes(node.index) = new Node(node.index, node.split, node.i, -1, -1, node.parent,
         node.err, node.c, node.size, node.leaf)
     }
   }
 
-  def buildDT(nodes:HashMap[Int, Node],data: ArrayBuffer[RegFeature],
+  def buildDT(nodes: HashMap[Int, Node], data: ArrayBuffer[RegFeature],
     idx1: HashMap[Int, HashSet[String]],
     numIdx: HashSet[Int], index: Int): Node = {
 
@@ -126,8 +125,8 @@ object CARTReg {
       for (iAttr <- idx1.keys) {
         val isNumeric = numIdx.contains(iAttr)
         if (isNumeric) {
-          
-          var bestSplit = splitNumeric(index,data, iAttr)
+
+          var bestSplit = splitNumeric(index, data, iAttr)
           split(iAttr) = bestSplit._1 + ""
           gini(iAttr) = bestSplit._2
           dist(iAttr) = bestSplit._3
@@ -159,14 +158,14 @@ object CARTReg {
         val leftNode = {
           var d = idx1.map(f => f)
           if (!isNumeric) d(bestAttr).remove(bestSplit)
-          val node = buildDT(nodes,left, d, numIdx, 2 * index)
+          val node = buildDT(nodes, left, d, numIdx, 2 * index)
           nodes(2 * index) = node
           node
         }
         val rightNode = {
           var d = idx1.map(f => f)
           if (!isNumeric) { d(bestAttr).remove(bestSplit) }
-          val node = buildDT(nodes,right, d, numIdx, 2 * index + 1)
+          val node = buildDT(nodes, right, d, numIdx, 2 * index + 1)
           nodes(2 * index + 1) = node
           node
         }
@@ -188,7 +187,7 @@ object CARTReg {
         val l = valuefor(data)
         val node = new Node(index, "", -1, -1, -1, parent, l, l, data.size, 1)
         nodes(index) = node
-       // println(node.c)
+        // println(node.c)
         node
       }
 
@@ -217,21 +216,21 @@ object CARTReg {
   def valuefor(data: ArrayBuffer[RegFeature]): Double = {
 
     val sum1 = data.map(f => f.value).sum
-    val sum3 = data.map(f =>  (1 - math.abs(f.value))).sum
+    val sum3 = data.map(f => (1 - math.abs(f.value))).sum
     val sum2 = data.map(f => math.abs(f.value) * (1 - math.abs(f.value))).sum
     // val avgright = right.map(f=>f.value).sum/right.size
     //val loss = data.map(f => (f.value - avg) * (f.value - avg)).sum
     //val lossright = left.map(f=>(f.value-avgright)*(f.value-avgright)).sum
     //loss
-//    println(sum1+"=>"+sum2+"="+(sum1 / sum2))
+    //    println(sum1+"=>"+sum2+"="+(sum1 / sum2))
     //val t = if(sum1<0) -1.0 else 1.0
-    if(math.abs(sum3)<1e-10){
+    if (math.abs(sum3) < 1e-10) {
       100
-    }else{
+    } else {
       sum1 / sum2
     }
     //sum1/data.size
-    
+
   }
   def minIndex(Arr: Array[Double]): Int = {
     var i = 0
@@ -261,7 +260,7 @@ object CARTReg {
 
       val left = ArrayBuffer[RegFeature]()
       val right = ArrayBuffer[RegFeature]()
-      val miss = missInsts.map(f=>f)
+      val miss = missInsts.map(f => f)
       hasValueInsts.map(inst => {
         val f = inst.features(iAttr)
         if (currCutPoint.equalsIgnoreCase(f)) {
@@ -305,7 +304,7 @@ object CARTReg {
     }
     (bestCutPoint, bestGini, bestDist, bestFaction, bestLeft, bestRight)
   }
-  def splitNumeric(index:Int,instances: ArrayBuffer[RegFeature],
+  def splitNumeric(index: Int, instances: ArrayBuffer[RegFeature],
     iAttr: Int): (Double, Double, Array[Double], Array[Double], ArrayBuffer[RegFeature], ArrayBuffer[RegFeature]) = {
     var bestCutPoint = -1.0
     var bestGini = Double.MaxValue
@@ -322,64 +321,64 @@ object CARTReg {
 
     val parentReg = instances.map(f => f.value).sum / instances.size
 
-    if(sortedValue.size<2){
-      
-    }else{
-    for (i <- 0 until sortedValue.length - 1) {
-      if(index == 8){
-      print("")
-    }
-      val currCutPoint = (sortedValue(i) + sortedValue(i + 1)) / 2.0
-      var dist = Array.fill(2)(0.0)
+    if (sortedValue.size < 2) {
 
-      val left = ArrayBuffer[RegFeature]()
-      val right = ArrayBuffer[RegFeature]()
-      val miss = missInsts.map(f=>f)
-      hasValueInsts.map(inst => {
-        val f = inst.features(iAttr).toDouble
-        if (f > currCutPoint) {
-          dist(1) = dist(1) + 1
-          right += inst
-        } else {
-          dist(0) = dist(0) + 1
-          left += inst
+    } else {
+      for (i <- 0 until sortedValue.length - 1) {
+        if (index == 8) {
+          print("")
         }
-      })
+        val currCutPoint = (sortedValue(i) + sortedValue(i + 1)) / 2.0
+        var dist = Array.fill(2)(0.0)
 
-      val tempDist = Array.fill(2)(0.0)
-      //tempDist(0) = dist(0).values.sum * 1.0
-      //tempDist(1) = dist(1).values.sum * 1.0
+        val left = ArrayBuffer[RegFeature]()
+        val right = ArrayBuffer[RegFeature]()
+        val miss = missInsts.map(f => f)
+        hasValueInsts.map(inst => {
+          val f = inst.features(iAttr).toDouble
+          if (f > currCutPoint) {
+            dist(1) = dist(1) + 1
+            right += inst
+          } else {
+            dist(0) = dist(0) + 1
+            left += inst
+          }
+        })
 
-      val tempSum = dist.sum
-      val tempPro = dist.map(t => t * 1.0 / tempSum)
+        val tempDist = Array.fill(2)(0.0)
+        //tempDist(0) = dist(0).values.sum * 1.0
+        //tempDist(1) = dist(1).values.sum * 1.0
 
-      val leftsize = (tempPro(0) * miss.size).toInt
-      for (i <- 0 until leftsize) {
-        val t = (math.random * miss.size).toInt
-        left += miss.remove(t)
+        val tempSum = dist.sum
+        val tempPro = dist.map(t => t * 1.0 / tempSum)
+
+        val leftsize = (tempPro(0) * miss.size).toInt
+        for (i <- 0 until leftsize) {
+          val t = (math.random * miss.size).toInt
+          left += miss.remove(t)
+        }
+        right ++= miss
+
+        val avgleft = left.map(f => f.value).sum / left.size
+        val avgright = right.map(f => f.value).sum / right.size
+        val lossleft = left.map(f => (f.value - avgleft) * (f.value - avgleft)).sum
+        val lossright = right.map(f => (f.value - avgright) * (f.value - avgright)).sum
+        val currGini = lossleft + lossright //computeGiniGain(dist, parentDist)
+
+        if (currGini < bestGini && left.size > N && right.size > N) {
+          bestGini = currGini
+          bestCutPoint = currCutPoint
+          bestDist = dist
+          bestFaction = tempPro
+          bestLeft = left
+          bestRight = right
+        }
       }
-      right ++= miss
-
-      val avgleft = left.map(f => f.value).sum / left.size
-      val avgright = right.map(f => f.value).sum / right.size
-      val lossleft = left.map(f => (f.value - avgleft) * (f.value - avgleft)).sum
-      val lossright = right.map(f => (f.value - avgright) * (f.value - avgright)).sum
-      val currGini = lossleft + lossright //computeGiniGain(dist, parentDist)
-
-      if (currGini < bestGini && left.size > N && right.size > N) {
-        bestGini = currGini
-        bestCutPoint = currCutPoint
-        bestDist = dist
-        bestFaction = tempPro
-        bestLeft = left
-        bestRight = right
-      }
-    }
     }
     (bestCutPoint, bestGini, bestDist, bestFaction, bestLeft, bestRight)
   }
 
-  def printTree(nodes:HashMap[Int, Node],root: Node, lev: Int) {
+  def printTree(nodes: HashMap[Int, Node], root: Node, lev: Int) {
     val n = root
     val NTt = n.leaf
     val RTt = n.err
@@ -394,53 +393,51 @@ object CARTReg {
       ",split=" + root.split
       + err + c + size)
     // println("-"*lev + node.toString)
-    if (root.left > 0) printTree(nodes,nodes(root.left), lev + 1)
-    if (root.right > 0) printTree(nodes,nodes(root.right), lev + 1)
+    if (root.left > 0) printTree(nodes, nodes(root.left), lev + 1)
+    if (root.right > 0) printTree(nodes, nodes(root.right), lev + 1)
   }
   def instanceFor(nodes: HashMap[Int, Node], lev: Int, x: Array[String], numIdx: HashSet[Int]): Double = {
     val n = nodes(lev)
     val i = n.i
-    val t = if(i == -1){
+    val t = if (i == -1) {
       n.c
-    }else{
-      
-    
-    val isNumeric = if (numIdx.contains(i)) true else false
-    
-    val d = x(i).equalsIgnoreCase("?")
+    } else {
 
-     val m = if(d){
-       0.0
-     }else{
-       
-     
-      val c = if (isNumeric) {
-        
-        val split = n.split.toDouble
-        if (n.left > 0 && x(i).toDouble < split) {
-          instanceFor(nodes, lev * 2, x, numIdx)
-        } else if (n.right > 0 && x(i).toDouble >= split) {
-          instanceFor(nodes, lev * 2 + 1, x, numIdx)
-        } else {
-          n.c
-        }
+      val isNumeric = if (numIdx.contains(i)) true else false
 
+      val d = x(i).equalsIgnoreCase("?")
+
+      val m = if (d) {
+        0.0
       } else {
-        val split = n.split
-        if (n.left > 0 && x(i).equalsIgnoreCase(split)) {
-          instanceFor(nodes, lev * 2, x, numIdx)
-        } else if (n.right > 0 && !x(i).equalsIgnoreCase(split)) {
-          instanceFor(nodes, lev * 2 + 1, x, numIdx)
+
+        val c = if (isNumeric) {
+
+          val split = n.split.toDouble
+          if (n.left > 0 && x(i).toDouble < split) {
+            instanceFor(nodes, lev * 2, x, numIdx)
+          } else if (n.right > 0 && x(i).toDouble >= split) {
+            instanceFor(nodes, lev * 2 + 1, x, numIdx)
+          } else {
+            n.c
+          }
+
         } else {
-          n.c
+          val split = n.split
+          if (n.left > 0 && x(i).equalsIgnoreCase(split)) {
+            instanceFor(nodes, lev * 2, x, numIdx)
+          } else if (n.right > 0 && !x(i).equalsIgnoreCase(split)) {
+            instanceFor(nodes, lev * 2 + 1, x, numIdx)
+          } else {
+            n.c
+          }
         }
+        c
       }
-      c
-     }
-    m
+      m
     }
-    
-//    }
+
+    //    }
     //println(t)
     t
   }
@@ -451,16 +448,16 @@ object CARTReg {
     numIdx.+=(1)
     numIdx.+=(2)
     numIdx.+=(3)
-//    numIdx.+=(4)
+    //    numIdx.+=(4)
     numIdx.+=(5)
-                numIdx.+=(7)
-                numIdx.+=(8)
-                numIdx.+=(10)
+    numIdx.+=(7)
+    numIdx.+=(8)
+    numIdx.+=(10)
     val insts = new RegInstances(numIdx)
     insts.read("E:/books/spark/ml/decisionTree/cpu.csv")
 
     val nodes = classifier(insts, 2)
-    printTree(nodes,nodes(1), 0)
+    printTree(nodes, nodes(1), 0)
     insts.data.map(f => {
       println(instanceFor(nodes, 1, f.features, numIdx))
     })

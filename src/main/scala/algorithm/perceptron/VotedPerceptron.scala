@@ -6,7 +6,6 @@ import scala.collection.mutable.ArrayBuffer
 import algorithm.LabeledFeature
 import scala.collection.mutable.HashMap
 
-
 ////http://curtis.ml.cmu.edu/w/courses/index.php/Voted_Perceptron
 object VotedPerceptron {
   case class Model(vk: ArrayBuffer[Array[Double]], ck: ArrayBuffer[Int], pair: (String, String))
@@ -23,7 +22,7 @@ object VotedPerceptron {
   }
 
   //var gram: Array[Array[Double]] = null
-  
+
   //原始形式
   def classifier(insts: Instances, T: Int, rate: Double, fold: Int) {
     val numClass = insts.numClass
@@ -70,13 +69,13 @@ object VotedPerceptron {
         val traindata = mergeFold(foldA, i).++(mergeFold(foldB, i))
         val testdata = foldA(i).++=(foldB(i))
         shuffle(traindata)
-        
+
         val vk = new ArrayBuffer[Array[Double]]()
         val ck = ArrayBuffer[Int]()
         val model = train(traindata, vk, ck, pair, rate, T)
         //val model = trainByGram(traindata, pair, rate, T)
         val matrix = predict(model, testdata, pair)
-        
+
         //val matrix = predictByGram(model, testdata, pair)
         val a = matrix.map(f => f._2.values.sum).sum
         r += (matrix(pair._1).getOrElse(pair._1, 0) + matrix(pair._2).getOrElse(pair._2, 0)) * 1.0 / a
@@ -121,23 +120,23 @@ object VotedPerceptron {
     val vt = Array.fill(data(0).features.length)(0.0)
     vk.+=(vt)
     var ct = 0
-    ck+=(ct)
+    ck += (ct)
     var k = 0
-    while (/**err > 0 && */j > 0) {
+    while ( /**err > 0 && */ j > 0) {
       //println(err)
       err = 0
       data.map(f => {
         val yi = if (f.label.equalsIgnoreCase(pair._1)) 1 else -1
         val yx = (vk(k).zip(f.features).map(t => t._1 * t._2.toDouble).sum)
-        val y_ =  if (yx <= 0) -1 else 1
-        if(yi == y_){
-          ck(k) = ck(k)+1
-        }else{
-          val vt1 = vk(k).zip(f.features).map(t => t._1 + yi*t._2.toDouble)
+        val y_ = if (yx <= 0) -1 else 1
+        if (yi == y_) {
+          ck(k) = ck(k) + 1
+        } else {
+          val vt1 = vk(k).zip(f.features).map(t => t._1 + yi * t._2.toDouble)
           vk.+=(vt1)
-          ck+=(1)
-          k = k+1
-          err= err+1
+          ck += (1)
+          k = k + 1
+          err = err + 1
         }
       })
       j -= 1
@@ -160,9 +159,9 @@ object VotedPerceptron {
       //val yi = if (f.label.equalsIgnoreCase(pair._1)) 1 else -1
       //val yx = (w.zip(f.features).map(t => t._1 * t._2.toDouble).sum + b)
       var yx = 0.0
-      for(k<- 0 until vk.size){
-        val tmp = vk(k).zip(f.features).map(t=>t._1 * t._2.toDouble).sum
-        yx+=ck(k)* (if (tmp <= 0) -1 else 1)
+      for (k <- 0 until vk.size) {
+        val tmp = vk(k).zip(f.features).map(t => t._1 * t._2.toDouble).sum
+        yx += ck(k) * (if (tmp <= 0) -1 else 1)
       }
       val l = if (yx <= 0) -1 else 1
       val rlabel = if (1 == l) pair._1 else pair._2
@@ -187,8 +186,8 @@ object VotedPerceptron {
       //val yi = if (f.label.equalsIgnoreCase(pair._1)) 1 else -1
       //val yx = (w.zip(f.features).map(t => t._1 * t._2.toDouble).sum + b)
       var yx = 0.0
-      for(k<- 0 until vk.size){
-        yx+=ck(k)*vk(k).zip(f.features).map(t=>t._1 * t._2.toDouble).sum 
+      for (k <- 0 until vk.size) {
+        yx += ck(k) * vk(k).zip(f.features).map(t => t._1 * t._2.toDouble).sum
       }
       val l = if (yx <= 0) -1 else 1
       val rlabel = if (1 == l) pair._1 else pair._2
