@@ -7,7 +7,7 @@ import classifier.Classifier
 import classifier.Model
 import core.Instances
 
-class NaiveBeyes(insts: Instances) extends Classifier {
+class NaiveBayes(insts: Instances) extends Classifier {
 
   var yi_prob = new HashMap[String, Double]
   var ai_yi_prob = new HashMap[String, Array[HashMap[String, Double]]]
@@ -126,7 +126,7 @@ class NaiveBeyes(insts: Instances) extends Classifier {
   }
 }
 
-object NaiveBeyes {
+object NaiveBayes {
 
   def main(args: Array[String]): Unit = {
     var numIdx = new HashSet[Int]

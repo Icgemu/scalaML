@@ -1,1 +1,60 @@
-A tool for learning machine learning algorithm in Scala
+A library for machine learning algorithm written with Scala
+
+current implemented algorithm:
+-----------------------------
+classifier:
+   Bayes Model:
+        BayesNet
+        NaiveBayes
+   Boost Model:
+        AdboostM1/M2
+        GBDT
+        LogitBoost
+   lazy model:
+        KNN
+   Logistic Model:
+        LR
+        softmax
+   Neural Network Model:
+        BP
+        RBF
+   Perceptron Model: 
+        Kernel
+        Pocket
+        Linear
+        Voted
+   SVM Model:
+        SMO
+   Tree Model:
+        C4.5
+        CART
+        DesisionStump
+        ID3
+        RandomForest
+----------------------------
+cluster:
+    GMM
+    simpleKMean
+----------------------------
+recommander system:
+    SVD
+    Slopone
+----------------------------
+marker problem:
+    HMM
+----------------------------
+regression:
+    boost model:
+        boosting tree
+    tree model:
+        CART
+----------------------------
+Matrix decomposition:
+       qr(Householder/Givens Rotation)
+       lu/lup
+       SVD
+       LDA
+----------------------------
+other :
+     Discretization
+       
