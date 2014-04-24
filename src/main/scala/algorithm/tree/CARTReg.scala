@@ -27,7 +27,7 @@ object CARTReg {
     buildDT(nodes, data, idx, numIdx, 1)
 
     get(nodes, J)
-    //prune()
+    //prune(nodes)
     //printTree(nodes(1), 0)
     //println("--------------")
     nodes
@@ -216,20 +216,20 @@ object CARTReg {
   def valuefor(data: ArrayBuffer[RegFeature]): Double = {
 
     val sum1 = data.map(f => f.value).sum
-    val sum3 = data.map(f => (1 - math.abs(f.value))).sum
-    val sum2 = data.map(f => math.abs(f.value) * (1 - math.abs(f.value))).sum
+//    val sum3 = data.map(f => (1 - math.abs(f.value))).sum
+//    val sum2 = data.map(f => math.abs(f.value) * (1 - math.abs(f.value))).sum
     // val avgright = right.map(f=>f.value).sum/right.size
     //val loss = data.map(f => (f.value - avg) * (f.value - avg)).sum
     //val lossright = left.map(f=>(f.value-avgright)*(f.value-avgright)).sum
     //loss
     //    println(sum1+"=>"+sum2+"="+(sum1 / sum2))
     //val t = if(sum1<0) -1.0 else 1.0
-    if (math.abs(sum3) < 1e-10) {
-      100
-    } else {
-      sum1 / sum2
-    }
-    //sum1/data.size
+//    if (math.abs(sum3) < 1e-10) {
+//      100
+//    } else {
+//      sum1 / sum2
+//    }
+    sum1/data.size
 
   }
   def minIndex(Arr: Array[Double]): Int = {
@@ -448,18 +448,18 @@ object CARTReg {
     numIdx.+=(1)
     numIdx.+=(2)
     numIdx.+=(3)
-    //    numIdx.+=(4)
+    numIdx.+=(4)
     numIdx.+=(5)
-    numIdx.+=(7)
-    numIdx.+=(8)
-    numIdx.+=(10)
+//    numIdx.+=(7)
+//    numIdx.+=(8)
+//    numIdx.+=(10)
     val insts = new RegInstances(numIdx)
     insts.read("E:/books/spark/ml/decisionTree/cpu.csv")
 
-    val nodes = classifier(insts, 2)
+    val nodes = classifier(insts, 8)
     printTree(nodes, nodes(1), 0)
     insts.data.map(f => {
-      println(instanceFor(nodes, 1, f.features, numIdx))
+      println(f.value+"->"+instanceFor(nodes, 1, f.features, numIdx))
     })
   }
 

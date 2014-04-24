@@ -7,7 +7,7 @@ import algorithm.LabeledFeature
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.HashSet
 
-//http://www.cnblogs.com/frog-ww/archive/2013/01/06/2846988.html
+//http://ufldl.stanford.edu/wiki/index.php/Softmax_Regression
 object SoftMaxLR {
 
   case class Model(theta: Array[Array[Double]])
@@ -38,9 +38,9 @@ object SoftMaxLR {
     var theta = Array.fill(h_value.length)(Array.fill(N)(math.random))
 
     for (i <- 0 until ite) {
-      val alpha = (learnRate) / (i + learnRate)
-      modify_stochostic(data, learnRate, momentum, h_value, theta)
-      //modify_batch(data, learnRate, momentum, h_value, theta)
+      //val alpha = (learnRate) / (i + learnRate)
+      //modify_stochostic(data, learnRate, momentum, h_value, theta)
+     modify_batch(data, learnRate, momentum, h_value, theta)
     }
     Model(theta)
   }

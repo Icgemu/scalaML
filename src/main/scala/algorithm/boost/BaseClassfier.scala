@@ -73,6 +73,7 @@ object BaseClassfier {
     val lr = labelfor(right)
     var err = (ll._3 + lr._3) / (ll._2 + ll._3 + lr._2 + lr._3)
     val alpha = math.log((1 - err) / err)
+    print(gini(bestAttr))
     (bestAttr, alpha, bestSplit, ll._1, lr._1, err)
 
   }
@@ -361,7 +362,7 @@ object BaseClassfier {
 
     val leftWeight = childDist(0).values.sum
     val rightWeight = childDist(1).values.sum
-
+    //println("w->"+totalWeight+"->"+leftWeight+"->"+rightWeight)
     val parentGini = computeGini(parentDist, totalWeight)
     val leftGini = computeGini(childDist(0).toMap, leftWeight)
     val rightGini = computeGini(childDist(1).toMap, rightWeight)

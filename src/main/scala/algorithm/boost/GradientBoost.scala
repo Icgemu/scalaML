@@ -12,6 +12,7 @@ import algorithm.RegFeature
 import algorithm.tree.DecisionStump
 
 //Gradient Boosting Tree
+//Greedy Function Approximation A Gradient Boosting Machine:Algorithm 6:Lk-TreeBoost
 object GradientBoost {
 
   def classifier(insts: Instances, M: Int, J: Int) = {

@@ -15,6 +15,7 @@ object Adaboost {
     while (i < M && !isreturn) {
       insts.intWeight()
       val m = BaseClassfier.M1(insts)
+      println(m.toString)
       val err = m._6
       if (err > 0.5) {
         println(i + ": err >" + err)
@@ -207,7 +208,7 @@ object Adaboost {
     val insts = new Instances(numIdx)
     insts.read("E:/books/spark/ml/decisionTree/labor.csv")
 
-    M1(insts, 20)
+    M1(insts, 21)
   }
 
 }

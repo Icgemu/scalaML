@@ -1,4 +1,4 @@
-package algorithm.association
+package association
 
 import scala.io.Source
 import java.io.File
@@ -6,6 +6,8 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.ArrayBuffer
 
+//http://rakesh.agrawal-family.com/papers/vldb94apriori.pdf
+//Fast Algorithms for Mining Association Rules
 object Apriori {
 
   def find_frequent(file: String, confidence: Double, support: Int) {

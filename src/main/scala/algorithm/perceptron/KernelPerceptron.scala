@@ -7,6 +7,7 @@ import algorithm.LabeledFeature
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.HashSet
 
+//http://alex.smola.org/teaching/pune2007/pune_3.pdf
 object KernelPerceptron {
   case class Model(b: Double, w: Array[Double], pair: (String, String), y: Array[(Int, Int)])
 

@@ -258,7 +258,7 @@ object ClassificationDecisionStump2 {
         dist(0)(t1.label) = dist(0).getOrElse(t1.label, 0.0) + t1.weight
         val t2 = miss(i).copy
         t2.weight = t2.weight * tempPro(1)
-        left += t2
+        right += t2
         dist(1)(t2.label) = dist(1).getOrElse(t2.label, 0.0) + t2.weight
         //w -= tt.weight
       }

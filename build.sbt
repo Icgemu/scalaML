@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
     "ch.qos.logback"    % "logback-classic"      % "1.1.2",
     "colt" % "colt" % "1.2.0",
     "org.apache.spark" % "spark-mllib_2.10" % "0.9.0-incubating",
-    "org.apache.spark" % "spark-examples_2.10" % "0.9.0-incubating"
+    "nz.ac.waikato.cms.weka" % "weka-stable" % "3.6.10"
 )
 
 
