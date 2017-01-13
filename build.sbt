@@ -6,7 +6,7 @@ name := "scalaML"
 
 version := "0.0.1"
 
-organization := "com.ml"
+organization := "org.ml"
 
 // set the Scala version used for the project
 scalaVersion := "2.10.4"
@@ -17,14 +17,14 @@ resolvers ++= Seq(
 
 
 libraryDependencies ++= Seq(
-	"org.scalacheck" %% "scalacheck" % "1.11.3" % "test",
-	"org.pegdown" % "pegdown" % "1.0.2" % "test", //used in html report
-	"org.scalatest" % "scalatest_2.10" % "2.1.0" % "test",
-	"org.slf4j"         % "slf4j-api"            % "1.7.7",
-    "ch.qos.logback"    % "logback-classic"      % "1.1.2",
+	"org.scalacheck" %% "scalacheck_2.10" % "1.13.4" % "test",
+	"org.pegdown" % "pegdown" % "1.6.0" % "test", //used in html report
+	"org.scalatest" % "scalatest_2.10" % "3.0.1" % "test",
+	"org.slf4j"         % "slf4j-api"            % "1.7.22",
+    "ch.qos.logback"    % "logback-classic"      % "1.1.8",
     "colt" % "colt" % "1.2.0",
-    "org.apache.spark" % "spark-mllib_2.10" % "0.9.0-incubating",
-    "nz.ac.waikato.cms.weka" % "weka-stable" % "3.6.10"
+    "org.apache.spark" % "spark-mllib_2.10" % "2.1.0",
+    "nz.ac.waikato.cms.weka" % "weka-stable" % "3.8.1"
 )
 
 
